@@ -5,7 +5,7 @@ briefDescription: 'Test, rate and improve your Backend knowledge with these ques
 title: '50 Popular Backend Developer Interview Questions and Answers'
 description: 'Test, rate and improve your Backend knowledge with these questions.'
 authorId: 'fernando'
-isNew: true
+isNew: false
 date: 2024-05-24
 seo:
   title: '50 Popular Backend Developer Interview Questions and Answers'
@@ -61,7 +61,7 @@ questions:
     topics:
       - 'Beginner'
   - question: What is containerization, and how does it benefit backend development?
-    answer: statelessness-http.md
+    answer: containerization.md
     topics:
       - 'Beginner'
   - question: What measures would you take to secure a newly developed API?
@@ -141,7 +141,7 @@ questions:
     topics:
       - 'Intermediate'
   - question: Describe the concept of eventual consistency and its implications in backend systems
-    answer: api-dependencies.md
+    answer: eventual-consistency.md
     topics:
       - 'Intermediate'
   - question: What is a reverse proxy, and how is it useful in backend development?
@@ -221,6 +221,8 @@ questions:
     topics:
       - 'Advanced'
 ---
+
+![The best backend interview questions to prepare for.](https://assets.roadmap.sh/guest/backend-developer-interview-questions-pm9jx.jpg)
 
 Getting ready for a software developer interview is never easy, especially if you’re new to the main tech stack of the company. This is why understanding the type of questions you might get asked during a technical interview is one of the keys to success.
 

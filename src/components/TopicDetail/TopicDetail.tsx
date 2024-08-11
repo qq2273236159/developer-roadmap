@@ -24,12 +24,13 @@ import type {
 import { markdownToHtml, sanitizeMarkdown } from '../../lib/markdown';
 import { cn } from '../../lib/classname';
 import { Ban, FileText, HeartHandshake, X } from 'lucide-react';
-import { getUrlParams } from '../../lib/browser';
+import { getUrlParams, parseUrl } from '../../lib/browser';
 import { Spinner } from '../ReactIcons/Spinner';
 import { GitHubIcon } from '../ReactIcons/GitHubIcon.tsx';
 import { GoogleIcon } from '../ReactIcons/GoogleIcon.tsx';
 import { YouTubeIcon } from '../ReactIcons/YouTubeIcon.tsx';
 import { resourceTitleFromId } from '../../lib/roadmap.ts';
+import { lockBodyScroll } from '../../lib/dom.ts';
 
 type TopicDetailProps = {
   resourceTitle?: string;
@@ -49,6 +50,7 @@ const linkTypes: Record<AllowedLinkTypes, string> = {
   video: 'bg-purple-300',
   website: 'bg-blue-300',
   official: 'bg-blue-600 text-white',
+  feed: "bg-[#ce3df3] text-white"
 };
 
 export function TopicDetail(props: TopicDetailProps) {
@@ -223,7 +225,7 @@ export function TopicDetail(props: TopicDetailProps) {
               // article at third
               // videos at fourth
               // rest at last
-              const order = ['official', 'opensource', 'article', 'video'];
+              const order = ['official', 'opensource', 'article', 'video', 'feed'];
               return order.indexOf(a.type) - order.indexOf(b.type);
             });
 
@@ -261,6 +263,8 @@ export function TopicDetail(props: TopicDetailProps) {
 
   useEffect(() => {
     if (isActive) topicRef?.current?.focus();
+
+    lockBodyScroll(isActive);
   }, [isActive]);
 
   if (!isActive) {
@@ -365,7 +369,7 @@ export function TopicDetail(props: TopicDetailProps) {
                         className="flex w-full items-center justify-center rounded-md bg-gray-800 p-2 text-sm text-white transition-colors hover:bg-black hover:text-white disabled:bg-green-200 disabled:text-black"
                       >
                         <GitHubIcon className="mr-2 inline-block h-4 w-4 text-white" />
-                        Edit this Content
+                        Help us Improve this Content
                       </a>
                     </div>
                   )}
@@ -381,6 +385,18 @@ export function TopicDetail(props: TopicDetailProps) {
                           href={link.url}
                           target="_blank"
                           className="group font-medium text-gray-800 underline underline-offset-1 hover:text-black"
+                          onClick={() => {
+                            // if it is one of our roadmaps, we want to track the click
+                            if (canSubmitContribution) {
+                              const parsedUrl = parseUrl(link.url);
+
+                              window.fireEvent({
+                                category: 'TopicResourceClick',
+                                action: `Click: ${parsedUrl.hostname}`,
+                                label: `${resourceType} / ${resourceId} / ${topicId} / ${link.url}`,
+                              });
+                            }
+                          }}
                         >
                           <span
                             className={cn(
@@ -408,7 +424,7 @@ export function TopicDetail(props: TopicDetailProps) {
               )}
 
               {/* Contribution */}
-              {canSubmitContribution && !hasEnoughLinks && contributionUrl && (
+              {canSubmitContribution && !hasEnoughLinks && contributionUrl && hasContent && (
                 <div className="mb-12 mt-3 border-t text-sm text-gray-400 sm:mt-12">
                   <div className="mb-4 mt-3">
                     <p className="">
@@ -435,9 +451,9 @@ export function TopicDetail(props: TopicDetailProps) {
                   </div>
 
                   <p className="mb-2 mt-2 leading-relaxed">
-                    Help us improve this introduction and submit a link to a
-                    good article, podcast, video, or any other self-vetted
-                    resource that helped you understand this topic better.
+                    This popup should be a brief introductory paragraph for the topic and a few links
+                    to good articles, videos, or any other self-vetted resources. Please consider
+                    submitting a PR to improve this content.
                   </p>
                   <a
                     href={contributionUrl}
@@ -445,7 +461,7 @@ export function TopicDetail(props: TopicDetailProps) {
                     className="flex w-full items-center justify-center rounded-md bg-gray-800 p-2 text-sm text-white transition-colors hover:bg-black hover:text-white disabled:bg-green-200 disabled:text-black"
                   >
                     <GitHubIcon className="mr-2 inline-block h-4 w-4 text-white" />
-                    Edit this Content
+                    Help us Improve this Content
                   </a>
                 </div>
               )}
